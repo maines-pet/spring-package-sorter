@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title th:text="#{title.application}">Insert title here</title>
+<link th:href="@{/static/css/style.css}" rel="stylesheet" />
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+	rel="stylesheet" />
+
+</head>
+<body>
+	<div id="main-content">
+		<header>
+			<i class="fa fa-shopping-bag fa-4x header-icon"></i>
+			<p>Shop 'til you drop</p>
+		</header>
+		<div id="product-list">
+			<ul>
+				<li class="products" th:each="prod : ${products}">
+					<div class="product-details">
+						<p th:text="${prod.name}" class="font-weight-bold">Thymole</p>
+						<p th:text="'$' + ${prod.price}">123</p>
+						<p th:text="${prod.weight} + ' g'">53</p>
+					</div>
+					<div class="add-product">
+						<a href="#" class="add-to-cart-action"
+							th:id="${prod.id}"> <i class="fa fa-shopping-cart fa-2x"></i>
+						</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div>
+			<div id="shopping-cart">
+				<div id="empty-shopping-cart"
+					th:classappend="${#lists.isEmpty(shoppingCart.items) ? '' : 'hide-cart' }">
+					<div th:include="result-fragment :: empty-shopping-cart"></div>
+				</div>
+				<div id="filled-shopping-cart"
+					th:classappend="${#lists.isEmpty(shoppingCart.items) ? 'hide-cart' : ''}">
+					<div id="cart-list">
+						<div th:include="result-fragment :: cart-package-result(${shoppingCart.packages})"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script th:inline="javascript">
+/*<![CDATA[*/
+	$(".add-product a").click(function(e){
+		e.preventDefault();
+		var postAddress = /*[[@{/packages}]]*/;
+
+		var request = $.ajax({
+			type: 'POST',
+			url: postAddress,
+			contentType: "application/json",
+			dataType: "html",
+			data: JSON.stringify({"id" : $(this).attr('id'),
+									"name" : null,
+									"price" : 0,
+									"weight" : 0})
+		});
+		
+		request.success(function(result){
+			$("#empty-shopping-cart").addClass("hide-cart");
+			$("#filled-shopping-cart").html(result).removeClass("hide-cart");
+		});
+		
+		request.fail(function(jqXHR, textStatus){
+			console.log(jqXHR);
+		});
+	});
+	$(document).on('click', '#reset-btn', function(){
+		var getAddress = /*[[@{/packages/reset}]]*/;
+		var request = $.ajax({
+			type: 'GET',
+			url: getAddress,
+			dataType: "html"
+		});
+		
+		request.success(function(result){
+			$("#filled-shopping-cart").empty();
+			$("#filled-shopping-cart").addClass("hide-cart");
+			$("#empty-shopping-cart").removeClass("hide-cart")
+			$("#empty-shopping-cart").html(result);
+		});
+		
+		request.fail(function(jqXHR, textStatus){
+			console.log(jqXHR);
+		});
+	});
+/*]]>*/
+</script>
+</html>

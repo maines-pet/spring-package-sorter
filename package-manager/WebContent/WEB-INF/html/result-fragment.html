@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title th:text="#{title.application}">Insert title here</title>
+<link th:href="@{/static/css/style.css}" rel="stylesheet" />
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+	rel="stylesheet" />
+
+</head>
+<body>
+	<div th:fragment="empty-shopping-cart">
+		<p class="font-weight-bold">Your shopping cart is empty.</p>
+	</div>
+
+	<div th:fragment="cart-package-result(packages)">
+		<p class="font-weight-bold">Carts</p>
+		<hr />
+		<button type="button" id="reset-btn">Reset</button>
+		<ul>
+			<li class="packages">
+				<!--/*/ <th:block th:each="package : ${packages}"> /*/-->
+				<div class="package">
+					<ul>
+						<li th:text="${prod.name}" class="package-product-detail"
+							th:each="prod : ${package.products}">Thymole</li>
+					</ul>
+				</div>
+				<div class="package-detail">
+					<div class="inline">
+						<div>Total weight :</div>
+						<div th:text="${package.totalWeight} + ' g'">250 g</div>
+					</div>
+					<hr />
+					<div class="inline">
+						<div>Total price :</div>
+						<div th:text="'$ ' + ${package.totalPrice}">$ 250</div>
+					</div>
+					<hr />
+					<div class="inline">
+						<div>Courier price :</div>
+						<div th:text="'$ ' + ${package.price}">$ 250</div>
+					</div>
+				</div> <!--/*/ </th:block> /*/-->
+			</li>
+		</ul>
+	</div>
+</body>
+</html>
